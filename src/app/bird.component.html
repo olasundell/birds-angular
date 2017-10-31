@@ -1,0 +1,9 @@
+<div *ngIf="response">
+    <img src="{{response.pictureUrl}}"/>
+    <ul>
+        <li id="{{g.scientificName}}"
+            (click)="onSelect(g)"
+            [ngClass] = "{'correct': isCorrectAndClicked(g)}"
+            *ngFor="let g of response.genusBirds">{{g.name}}</li>
+    </ul>
+</div>
