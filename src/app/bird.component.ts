@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
-import {copyStyles} from "@angular/animations/browser/src/util";
+import {copyStyles} from '@angular/animations/browser/src/util';
 
 @Component({
     selector: 'app-bird',
@@ -53,9 +53,14 @@ export class BirdComponent implements OnInit {
 }
 
 interface Response {
-    pictureUrl: string;
+    media: Media;
     actualBird: Bird;
     genusBirds: Bird[];
+}
+
+interface Media {
+    mediaType: string;
+    url: string;
 }
 
 interface Bird {

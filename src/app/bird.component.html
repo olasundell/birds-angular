@@ -1,5 +1,6 @@
 <div *ngIf="response">
-    <img src="{{response.pictureUrl}}"/>
+    <img *ngIf="response.media.mediaType == 'PHOTO'" src="{{response.media.url}}"/>
+    <app-audio *ngIf="response.media.mediaType == 'AUDIO'" url="{{response.media.url}}"></app-audio>
     <ul>
         <li id="{{g.scientificName}}"
             (click)="onSelect(g)"

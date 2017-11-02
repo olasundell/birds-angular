@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import {BirdComponent} from './bird.component';
 
 @Component({
   selector: 'app-root',
