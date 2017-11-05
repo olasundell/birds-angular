@@ -1,6 +1,6 @@
-import {Component, OnInit} from '@angular/core';
-import {HttpClient, HttpErrorResponse} from '@angular/common/http';
-import {copyStyles} from '@angular/animations/browser/src/util';
+import {Component, Input, OnInit} from '@angular/core';
+import {HttpClient, HttpErrorResponse, HttpParams} from '@angular/common/http';
+import {LanguageService} from './language.service';
 
 @Component({
     selector: 'app-bird',
@@ -12,17 +12,26 @@ export class BirdComponent implements OnInit {
     clicked: boolean;
 
     // Inject HttpClient into your component or service.
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient, public languageService: LanguageService) {
         this.clicked = false;
     }
 
     ngOnInit(): void {
         // Make the HTTP request:
-        this.http.get<Response>('http://localhost:8080/random').subscribe(data => {
-            // Read the result field from the JSON response.
-            console.log(data)
-            this.response = data;
-        },
+        this.fetchBird();
+    }
+
+    private fetchBird() {
+        const params: HttpParams = new HttpParams();
+        params.set('lang', this.languageService.currentLanguage.name);
+
+        this.http.get<Response>('http://localhost:8080/random', {
+            params: params
+        }).subscribe(data => {
+                // Read the result field from the JSON response.
+                console.log(data);
+                this.response = data;
+            },
             (err: HttpErrorResponse) => {
                 if (err.error instanceof Error) {
                     // A client-side or network error occurred. Handle it accordingly.
@@ -38,14 +47,15 @@ export class BirdComponent implements OnInit {
 
     isCorrectAndClicked(bird: Bird): boolean {
         const b = this.clicked && bird.scientificName === this.response.actualBird.scientificName;
-        console.log('isCorrectAndClicked? ' + b);
+        // console.log('isCorrectAndClicked? ' + b);
         return b;
     }
 
     onSelect(bird: Bird) {
         console.log('Clicked bird ' + bird.scientificName);
         if (this.clicked) {
-            window.location.reload();
+            this.clicked = false;
+            this.fetchBird();
         } else {
             this.clicked = true;
         }
