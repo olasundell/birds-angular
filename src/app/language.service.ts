@@ -1,4 +1,4 @@
-import {Injectable, OnInit} from '@angular/core';
+import {Injectable } from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {Subject} from 'rxjs/Subject';
 
@@ -6,7 +6,6 @@ import {Subject} from 'rxjs/Subject';
 export class LanguageService {
     private _currentLanguage: Language;
     private _languages: Language[];
-
     langChange: Subject<Language> = new Subject<Language>();
 
     get languages(): Language[] {
@@ -23,7 +22,6 @@ export class LanguageService {
             return;
         }
         this._currentLanguage = value;
-        this.langChange.next(value);
     }
 
     constructor(private http: HttpClient) {

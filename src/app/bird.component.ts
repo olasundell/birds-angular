@@ -1,6 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpParams} from '@angular/common/http';
 import {Language, LanguageService} from './language.service';
+import {Region, RegionService} from "./region.service";
+import {Subject} from "rxjs/Subject";
 
 @Component({
     selector: 'app-bird',
@@ -8,11 +10,12 @@ import {Language, LanguageService} from './language.service';
     styleUrls: ['./bird.component.css']
 })
 export class BirdComponent implements OnInit {
+
     response: Response;
     clicked: boolean;
 
     // Inject HttpClient into your component or service.
-    constructor(private http: HttpClient, public languageService: LanguageService) {
+    constructor(private http: HttpClient, public languageService: LanguageService, public regionService: RegionService) {
         this.clicked = false;
     }
 
@@ -21,9 +24,10 @@ export class BirdComponent implements OnInit {
     }
 
     private fetchBird() {
-        this.languageService.langChange.asObservable().subscribe((next) => {
-            this.fetchFromServer(next);
-        });
+        this.fetchFromServer(this.languageService.currentLanguage, this.regionService.currentRegion);
+        // this.languageService.langChange.asObservable().subscribe((next) => {
+        //     this.fetchFromServer(next, region);
+        // });
     }
 
     isCorrectAndClicked(bird: Bird): boolean {
@@ -42,11 +46,17 @@ export class BirdComponent implements OnInit {
         }
     }
 
-    private fetchFromServer(lang: Language) {
+    private fetchFromServer(lang: Language, region: Region) {
         let params: HttpParams = new HttpParams();
-        params = params.append('lang', lang.name.toLowerCase());
+        if (lang) {
+            params = params.append('lang', lang.name.toLowerCase());
+        }
 
-        console.log(`Fetching new bird with language ${lang.name}`);
+        if (region) {
+            params = params.append('region', region.code);
+        }
+
+        // console.log(`Fetching new bird with language ${lang.name}`);
         console.log(params);
 
         this.http.get<Response>('http://localhost:8080/random', {
@@ -86,4 +96,3 @@ interface Bird {
     genusName: string;
     name: string;
 }
-

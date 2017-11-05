@@ -16,23 +16,12 @@ import {Language, LanguageService} from './language.service';
 })
 
 
-export class LanguageComponent implements OnChanges {
+export class LanguageComponent {
     onChange(lang: Language) {
         console.log(lang);
         this.languageService.currentLanguage = lang;
     }
 
-    ngOnChanges(changes: SimpleChanges): void {
-        console.log(changes);
-    }
-    // languages: Language[];
-    // currentLanguage: Language;
-
-    constructor(public languageService: LanguageService) {
-        // this.currentLanguage = languageService.currentLanguage;
-        // this.languages = this.languageService.languages;
-    }
-
-
+    constructor(public languageService: LanguageService) { }
 }
 
