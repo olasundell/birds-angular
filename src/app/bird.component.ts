@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpParams} from '@angular/common/http';
-import {LanguageService} from './language.service';
+import {Language, LanguageService} from './language.service';
 
 @Component({
     selector: 'app-bird',
@@ -17,13 +17,37 @@ export class BirdComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        // Make the HTTP request:
         this.fetchBird();
     }
 
     private fetchBird() {
-        const params: HttpParams = new HttpParams();
-        params.set('lang', this.languageService.currentLanguage.name);
+        this.languageService.langChange.asObservable().subscribe((next) => {
+            this.fetchFromServer(next);
+        });
+    }
+
+    isCorrectAndClicked(bird: Bird): boolean {
+        const b = this.clicked && bird.scientificName === this.response.actualBird.scientificName;
+        // console.log('isCorrectAndClicked? ' + b);
+        return b;
+    }
+
+    onSelect(bird: Bird) {
+        console.log('Clicked bird ' + bird.scientificName);
+        if (this.clicked) {
+            this.clicked = false;
+            this.fetchBird();
+        } else {
+            this.clicked = true;
+        }
+    }
+
+    private fetchFromServer(lang: Language) {
+        let params: HttpParams = new HttpParams();
+        params = params.append('lang', lang.name.toLowerCase());
+
+        console.log(`Fetching new bird with language ${lang.name}`);
+        console.log(params);
 
         this.http.get<Response>('http://localhost:8080/random', {
             params: params
@@ -43,22 +67,6 @@ export class BirdComponent implements OnInit {
                 }
             }
         );
-    }
-
-    isCorrectAndClicked(bird: Bird): boolean {
-        const b = this.clicked && bird.scientificName === this.response.actualBird.scientificName;
-        // console.log('isCorrectAndClicked? ' + b);
-        return b;
-    }
-
-    onSelect(bird: Bird) {
-        console.log('Clicked bird ' + bird.scientificName);
-        if (this.clicked) {
-            this.clicked = false;
-            this.fetchBird();
-        } else {
-            this.clicked = true;
-        }
     }
 }
 

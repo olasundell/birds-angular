@@ -1,10 +1,13 @@
 import {Injectable, OnInit} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
+import {Subject} from 'rxjs/Subject';
 
 @Injectable()
 export class LanguageService {
     private _currentLanguage: Language;
     private _languages: Language[];
+
+    langChange: Subject<Language> = new Subject<Language>();
 
     get languages(): Language[] {
         return this._languages;
@@ -15,7 +18,12 @@ export class LanguageService {
     }
 
     set currentLanguage(value: Language) {
+        console.log(`Setting current language to ${value.name}`)
+        if (!value) {
+            return;
+        }
         this._currentLanguage = value;
+        this.langChange.next(value);
     }
 
     constructor(private http: HttpClient) {
@@ -23,6 +31,7 @@ export class LanguageService {
     }
 
     byCode(lang1: Language, lang2: Language): boolean {
+        console.log(`Comparing ${lang1} with ${lang2}`)
         if (!lang1 || !lang2) {
             return false;
         }
@@ -43,6 +52,7 @@ export class LanguageService {
                 }
 
                 this._currentLanguage = langMap.get('English');
+                this.langChange.next(this._currentLanguage);
                 this._languages = data;
             },
             (err: HttpErrorResponse) => {

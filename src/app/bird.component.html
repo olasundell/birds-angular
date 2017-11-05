@@ -1,4 +1,4 @@
-<div *ngIf="languageService.currentLanguage && response">
+<div *ngIf="response">
     <img *ngIf="response.media.mediaType == 'PHOTO'" src="{{response.media.url}}"/>
     <app-audio *ngIf="response.media.mediaType == 'AUDIO'" url="{{response.media.url}}"></app-audio>
     <ul>

@@ -1,5 +1,5 @@
-import {Component} from '@angular/core';
-import {LanguageService} from './language.service';
+import {Component, OnChanges, SimpleChanges} from '@angular/core';
+import {Language, LanguageService} from './language.service';
 
 @Component({
     selector: 'app-language',
@@ -7,17 +7,24 @@ import {LanguageService} from './language.service';
         <div *ngIf="languageService.languages">
             Language:
             <select name="language" [compareWith]="languageService.byCode" [(ngModel)]="languageService.currentLanguage">
-                <option *ngFor="let lang of languageService.languages" [ngValue]="lang">
+                <option *ngFor="let lang of languageService.languages" (change)="onChange(lang)" [ngValue]="lang">
                     {{lang.name}}
                 </option>
             </select>
         </div>
     `
-    // templateUrl: './language.component.html'
 })
 
 
-export class LanguageComponent {
+export class LanguageComponent implements OnChanges {
+    onChange(lang: Language) {
+        console.log(lang);
+        this.languageService.currentLanguage = lang;
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        console.log(changes);
+    }
     // languages: Language[];
     // currentLanguage: Language;
 
